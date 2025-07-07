@@ -6,7 +6,13 @@
         <mat-label>OTP Code</mat-label>
         <input matInput type="text" [(ngModel)]="otpCode" name="otp" required autocomplete="one-time-code" maxlength="8" />
       </mat-form-field>
-      <button mat-raised-button color="accent" type="submit">Verify OTP</button>
+      <button mat-raised-button color="accent" type="submit" [disabled]="retries <= 0">Verify OTP</button>
     </form>
+    <div *ngIf="showResendPrompt" style="color: #d32f2f; margin-top: 1rem; text-align: center; font-weight: 600;">
+      0 retries remaining, resend OTP?
+    </div>
+    <button mat-raised-button color="primary" (click)="resendOtp()" [disabled]="isResending" style="margin-top: 1.2rem; width: 100%; font-weight: 700; font-size: 1.08rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+      Resend OTP
+    </button>
   </div>
 </div>

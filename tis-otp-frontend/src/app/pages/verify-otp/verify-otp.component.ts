@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OtpService } from '../../services/otp.service';
@@ -11,21 +12,71 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-verify-otp',
   standalone: true,
-  imports: [FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule],
   templateUrl: './verify-otp.component.html',
   styleUrls: ['./verify-otp.component.scss']
 })
 export class VerifyOtpComponent {
   otpCode = '';
   email = '';
+  retries = 3;
+  showResendPrompt = false;
+  isResending = false;
+  resentOtp: string | null = null;
   constructor(private otpService: OtpService, private router: Router, private snackBar: MatSnackBar) {
     const nav = this.router.getCurrentNavigation();
     this.email = nav?.extras.state?.['email'] ?? '';
   }
   submit() {
+    if (this.retries <= 0) return;
     this.otpService.verifyOtp(this.email, this.otpCode).subscribe({
-      next: (res: any) => this.snackBar.open(res, 'Close', { duration: 6000, panelClass: 'otp-snackbar' }),
-      error: err => this.snackBar.open(err.error, 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' })
+      next: (res: any) => {
+        let msg = 'OTP verified successfully!';
+        if (typeof res === 'string') msg = res;
+        else if (res && typeof res.message === 'string') msg = res.message;
+        this.retries = 3;
+        this.showResendPrompt = false;
+        this.resentOtp = null;
+        this.otpCode = '';
+        this.router.navigate(['/otp-success']);
+      },
+      error: err => {
+        this.retries--;
+        let errMsg = 'OTP verification failed.';
+        if (typeof err?.error === 'string') errMsg = err.error;
+        else if (err?.error && typeof err.error.message === 'string') errMsg = err.error.message;
+        else if (typeof err === 'string') errMsg = err;
+        else if (err && typeof err.message === 'string') errMsg = err.message;
+        if (this.retries <= 0) {
+          this.showResendPrompt = true;
+          this.snackBar.open('0 retries remaining, resend OTP?', 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
+        } else {
+          this.snackBar.open(`${errMsg} (${this.retries} retries remaining)`, 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
+        }
+      }
+    });
+  }
+  resendOtp() {
+    if (this.isResending) return;
+    this.isResending = true;
+    this.otpService.requestOtp(this.email).subscribe({
+      next: (res: any) => {
+        if (res.otp) {
+          this.resentOtp = res.otp;
+          this.snackBar.open(`Your OTP: ${res.otp}`, 'Close', { duration: 6000, panelClass: 'otp-snackbar' });
+        } else {
+          this.resentOtp = null;
+          this.snackBar.open('OTP resent. Please check your email.', 'Close', { duration: 4000, panelClass: 'otp-snackbar' });
+        }
+        this.retries = 3;
+        this.showResendPrompt = false;
+        this.isResending = false;
+      },
+      error: err => {
+        const apiMsg = err?.error || 'Failed to resend OTP.';
+        this.snackBar.open(apiMsg, 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
+        this.isResending = false;
+      }
     });
   }
 }

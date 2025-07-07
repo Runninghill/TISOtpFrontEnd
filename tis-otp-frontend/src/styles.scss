@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
 html, body, app-root {
   height: 100%;
   width: 100vw;
@@ -7,22 +9,26 @@ html, body, app-root {
   padding: 0;
   overflow: hidden;
   box-sizing: border-box;
+  font-family: 'Nunito', 'Quicksand', 'Rubik', Arial, Helvetica, sans-serif;
 }
 
 *, *::before, *::after {
   box-sizing: inherit;
+  font-family: inherit;
 }
 
 body {
   background: transparent;
   display: flex;
   flex-direction: column;
+  font-family: inherit;
 }
 
 app-root {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  font-family: inherit;
 }
 
 /* Remove scrollbars for a cleaner look */

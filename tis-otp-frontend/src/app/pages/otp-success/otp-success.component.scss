@@ -1,4 +1,4 @@
-.login-bg {
+.otp-success-bg {
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
@@ -12,33 +12,28 @@
 }
 
 @keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.login-card {
+.otp-success-card {
   min-width: 340px;
   max-width: 420px;
   width: 100%;
   padding: 2.5rem 2rem 2rem 2rem;
   border-radius: 2rem;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  z-index: 2;
 }
 
-.login-title {
+.otp-success-title {
   font-size: 2.1rem;
   font-weight: 700;
   text-align: center;
@@ -46,42 +41,30 @@
   letter-spacing: 0.5px;
 }
 
-.login-field {
-  width: 100%;
-  margin-bottom: 2.2rem;
+.otp-success-message {
+  font-size: 1.15rem;
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
-button[mat-raised-button], .login-btn {
+button[mat-raised-button] {
   width: 100%;
+  padding: 1.1rem 0;
   font-size: 1.18rem;
   font-weight: 500;
-  padding: 1.1rem 0;
   border-radius: 10px;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 600px) {
-  .login-card {
+  .otp-success-card {
     min-width: 0;
     max-width: 98vw;
     padding: 1.2rem 0.5rem 1.2rem 0.5rem;
   }
-  .login-title {
+  .otp-success-title {
     font-size: 1.5rem;
   }
-}
-
-@media (max-width: 480px) {
-  mat-card {
-    min-width: 90vw;
-    padding: 1.2rem 0.5rem;
-  }
-}
-
-body,
-html {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
 }
