@@ -19,8 +19,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 export class VerifyOtpComponent {
   otpCode = '';
   email = '';
-  retries = 3;
-  showResendPrompt = false;
   isResending = false;
   resentOtp: string | null = null;
   constructor(private otpService: OtpService, private router: Router, private snackBar: MatSnackBar) {
@@ -28,31 +26,22 @@ export class VerifyOtpComponent {
     this.email = nav?.extras.state?.['email'] ?? '';
   }
   submit() {
-    if (this.retries <= 0) return;
     this.otpService.verifyOtp(this.email, this.otpCode).subscribe({
       next: (res: any) => {
         let msg = 'OTP verified successfully!';
         if (typeof res === 'string') msg = res;
         else if (res && typeof res.message === 'string') msg = res.message;
-        this.retries = 3;
-        this.showResendPrompt = false;
         this.resentOtp = null;
         this.otpCode = '';
         this.router.navigate(['/otp-success']);
       },
       error: err => {
-        this.retries--;
         let errMsg = 'OTP verification failed.';
         if (typeof err?.error === 'string') errMsg = err.error;
         else if (err?.error && typeof err.error.message === 'string') errMsg = err.error.message;
         else if (typeof err === 'string') errMsg = err;
         else if (err && typeof err.message === 'string') errMsg = err.message;
-        if (this.retries <= 0) {
-          this.showResendPrompt = true;
-          this.snackBar.open('0 retries remaining, resend OTP?', 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
-        } else {
-          this.snackBar.open(`${errMsg} (${this.retries} retries remaining)`, 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
-        }
+        this.snackBar.open(errMsg, 'Close', { duration: 4000, panelClass: 'otp-snackbar-error' });
       }
     });
   }
@@ -68,8 +57,6 @@ export class VerifyOtpComponent {
           this.resentOtp = null;
           this.snackBar.open('OTP resent. Please check your email.', 'Close', { duration: 4000, panelClass: 'otp-snackbar' });
         }
-        this.retries = 3;
-        this.showResendPrompt = false;
         this.isResending = false;
       },
       error: err => {

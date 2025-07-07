@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OtpService {
-  private apiUrl = 'https://localhost:53535/api/Otp'; // Replace with Azure URL after deployment
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
