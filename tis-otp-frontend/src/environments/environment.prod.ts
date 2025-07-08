@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api/Otp'
+  apiUrl: 'https://trustedinsuranceapi-temp-afc7grd9gwefeacr.southafricanorth-01.azurewebsites.net'
 };
